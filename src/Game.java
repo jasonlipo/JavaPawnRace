@@ -1,8 +1,10 @@
+import java.util.*;
+
 public class Game {
     
     private final Board board;
     private Colour currentPlayer;
-    private final Move[] moves = new Move[99999];
+    private final List<Move> moves = new ArrayList<>();
     private int currentMove = 0;
     private Colour winner = Colour.NONE;
     
@@ -16,30 +18,30 @@ public class Game {
     }
     
     public Move getLastMove() {
-        if (moves.length == 0) {
+        if (moves.isEmpty()) {
             return null;
         }
         else {
-            return moves[currentMove - 1];
+            return moves.get(currentMove - 1);
         }
     }
     
     public void applyMove(Move move) {
-        moves[currentMove] = move;
+        moves.add(currentMove, move);
         board.applyMove(move);
         updateGame(1);
     }
     
     public void unapplyMove() {
         if (currentMove > 0) {
-            Move lastMove = moves[currentMove - 1];
+            Move lastMove = moves.get(currentMove - 1);
             board.unapplyMove(lastMove);
             updateGame(-1);
         }
     }
     
     public boolean isFinished() {
-        Square lastReached = moves[currentMove - 1].getTo();
+        Square lastReached = moves.get(currentMove - 1).getTo();
         if (lastReached.getY() == (Utils.dimensions - 1)) {
             if (lastReached.occupiedBy() == Colour.WHITE) {
                 winner = Colour.WHITE;
