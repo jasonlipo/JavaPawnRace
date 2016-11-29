@@ -1,17 +1,14 @@
 public class Board {
     
-    private final int dimension = 8;
-    private final Square[][] setup = new Square[dimension][dimension];
+    private Square[][] setup = new Square[Utils.dimensions][Utils.dimensions];
     
     public Board(char whiteGap, char blackGap) {
        
-        char[] letters = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+        int whiteI = new String(Utils.letters).indexOf(whiteGap);
+        int blackI = new String(Utils.letters).indexOf(blackGap);
         
-        int whiteI = new String(letters).indexOf(whiteGap);
-        int blackI = new String(letters).indexOf(blackGap);
-        
-        for (int i=0; i<dimension; i++) {
-            for (int j=0; j<dimension; j++) {
+        for (int i=0; i<Utils.dimensions; i++) {
+            for (int j=0; j<Utils.dimensions; j++) {
                 
                 Colour occupy = Colour.NONE;
                 setup[i][j] = new Square(i, j);
@@ -91,22 +88,20 @@ public class Board {
     }
     
     public void display() {
-        
-        String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h" };
-        
+            
         String output = "";
-        for (String l : letters) {
-            output += l.toUpperCase() + " ";
+        for (char l : Utils.letters) {
+            output += String.valueOf(l).toUpperCase() + " ";
         }
         
         System.out.print("   " + output);
         System.out.println();
         System.out.println();
         
-        for (int i=0; i<dimension; i++) {
-            System.out.print((dimension-i)+"  ");
-            for (int j=0; j<dimension; j++) {
-                switch (setup[j][dimension-i-1].occupiedBy()) {
+        for (int i=0; i<Utils.dimensions; i++) {
+            System.out.print((Utils.dimensions-i)+"  ");
+            for (int j=0; j<Utils.dimensions; j++) {
+                switch (setup[j][Utils.dimensions-i-1].occupiedBy()) {
                     case BLACK:
                         System.out.print("B ");
                         break;
@@ -119,7 +114,7 @@ public class Board {
                 }
             }
             
-            System.out.print("  "+ (dimension-i));
+            System.out.print("  "+ (Utils.dimensions-i));
             System.out.println();
         
         }

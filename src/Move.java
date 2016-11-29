@@ -30,9 +30,9 @@ public class Move {
     }
     
     public String getSAN() {
-        String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h" };
-        String fromLetter = letters[from.getX()];
-        String toCell = letters[to.getX()] + to.getY();
+      
+        String fromLetter = String.valueOf(Utils.letters[from.getX()]);
+        String toCell = String.valueOf(Utils.letters[to.getX()]) + to.getY();
         if (isCapture()) {
             return fromLetter + "x" + toCell;
         }
