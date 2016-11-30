@@ -29,7 +29,6 @@ public class PawnRace {
                 System.out.print("Computer moved: ");
                 System.out.print(game.getLastMove().getSAN());
                 System.out.println();
-                board.display();
             }
             else {
                 System.out.print("Please enter a move (in SAN): ");
@@ -41,6 +40,7 @@ public class PawnRace {
                 Move parsed = game.parseMove(humanMove);
                 if (parsed != null) {
                     game.applyMove(parsed);
+                    board.display();
                 }
                 else {
                     System.out.print("Invalid move. ");
