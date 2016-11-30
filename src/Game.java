@@ -7,6 +7,7 @@ public class Game {
     private final List<Move> moves = new ArrayList<>();
     private int currentMove = 0;
     private Colour winner = Colour.NONE;
+    private final Player[] players = new Player[2];
 
     public Game(Board board) {
         this.board = board;
@@ -15,6 +16,11 @@ public class Game {
 
     public Colour getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public void setPlayers(Player p1, Player p2) {
+        players[0] = p1;
+        players[1] = p2;
     }
 
     public Move getLastMove() {
@@ -47,18 +53,31 @@ public class Game {
         Square lastReached = moves.get(currentMove - 1).getTo();
         if (lastReached.getY() == (Utils.dim - 1)) {
             if (lastReached.occupiedBy() == Colour.WHITE) {
+                System.out.println("White has reached the final rank!");
                 winner = Colour.WHITE;
                 return true;
             }
         }
         else if (lastReached.getY() == 0) {
             if (lastReached.occupiedBy() == Colour.BLACK) {
+                System.out.println("Black has reached the final rank!");
                 winner = Colour.BLACK;
                 return true;
             }
         }
-        // TODO: Game is also finished if player has no pawns left
-        // or player can't go at all because he is stuck
+
+        // See if player has no pawns left or is stuck
+        if (players[0].getAllPawns().length == 0 || players[0].getAllValidMoves().length == 0) {
+            System.out.println("White is unable to move!");
+            winner = Colour.BLACK;
+            return true;
+        }
+        else if (players[1].getAllPawns().length == 0 || players[1].getAllValidMoves().length == 0) {
+            System.out.println("Black is unable to move!");
+            winner = Colour.WHITE;
+            return true;
+        }
+
         return false;
     }
 
@@ -74,6 +93,8 @@ public class Game {
         // Set the starting square depending on the player
         int startRow = (currentPlayer == Colour.WHITE) ? 1 : 6;
 
+        Colour opponent = (currentPlayer == Colour.WHITE) ? Colour.BLACK : Colour.WHITE;
+
         try {
 
             if (san.contains("x")) {
@@ -84,13 +105,19 @@ public class Game {
                 int[] capture = translateSAN(captureData);
                 Square captureSq = board.getSquare(capture[0], capture[1]);
 
+                // Capture square must have the opponent in
+                if (captureSq.occupiedBy() != opponent) {
+                    return null;
+                }
+
                 // Find the starting square
-                int[] start = translateSAN(moveData + (capture[1] - (1*dir)));
+                int[] start = translateSAN(moveData + (capture[1] - (1*dir) + 1));
                 if (start == null) {
                     return null;
                 }
                 Square startSq = board.getSquare(start[0], start[1]);
                 if (startSq.occupiedBy() == currentPlayer) {
+                    System.out.println(currentPlayer.toString() + " takes the pawn at " + captureData);
                     return new Move(startSq, captureSq, true, false);
                 }
 
@@ -141,13 +168,17 @@ public class Game {
 
         if (san.length() != 2) return null;
 
-        int colIndex = 0;
+        int colIndex = -1;
         char colName = san.charAt(0);
         for (int i=0; i<Utils.letters.length; i++) {
             if (Utils.letters[i] == colName) {
                 colIndex = i;
                 break;
             }
+        }
+
+        if (colIndex == -1) {
+            return null;
         }
 
         int row = Character.getNumericValue(san.charAt(1));

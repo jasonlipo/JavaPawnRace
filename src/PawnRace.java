@@ -14,6 +14,11 @@ public class PawnRace {
         Game game = new Game(board);
         Player p1 = new Player(game, board, Colour.WHITE, player1.equals("c"));
         Player p2 = new Player(game, board, Colour.BLACK, player2.equals("c"));
+        p1.setOpponent(p2);
+        p2.setOpponent(p1);
+
+        // Set the players of the game
+        game.setPlayers(p1, p2);
 
         board.display();
 

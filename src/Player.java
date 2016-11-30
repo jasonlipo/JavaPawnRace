@@ -46,18 +46,42 @@ public class Player {
 
     public Move[] getAllValidMoves() {
 
+        Colour opponent = (col == Colour.WHITE) ? Colour.BLACK : Colour.WHITE;
+
+        // Set the starting square depending on the player
+        int startRow = (col == Colour.WHITE) ? 1 : 6;
+
         List<Move> validMoves = new ArrayList<>();
         Square[] playerPawns = getAllPawns();
 
         for (Square sq : playerPawns) {
 
-            // TODO: implement captures
+            // TODO: consider en passant rule
 
             // Set the multiplier (direction) depending on white/black
             int dir = (col == Colour.WHITE) ? 1 : -1;
 
             // If this player is White/Black, try the different moves
             // in the appropriate direction
+            // Look for capture moves
+            if (sq.getX() > 0) {
+                Square capt = board.getSquare(sq.getX() - 1, sq.getY() + (1 * dir));
+                // Only valid if square is occupied by the opponent
+                if (capt.occupiedBy() == opponent) {
+                    Move mCapt = new Move(sq, capt, true, false);
+                    validMoves.add(mCapt);
+                }
+            }
+            if (sq.getX() < Utils.dim - 1) {
+                Square captAlt = board.getSquare(sq.getX() + 1, sq.getY() + (1 * dir));
+                // Only valid if square is occupied by the opponent
+                if (captAlt.occupiedBy() == opponent) {
+                    Move mCaptAlt = new Move(sq, captAlt, true, false);
+                    validMoves.add(mCaptAlt);
+                }
+            }
+
+            // Look for standard 1 square moves
             Square sOne = board.getSquare(sq.getX(), sq.getY() + (1 * dir));
             // Only valid if square is empty
             if (sOne.occupiedBy() == Colour.NONE) {
@@ -69,11 +93,13 @@ public class Player {
             }
 
             // If this is the starting square, can move forward 2 squares
-            Square sTwo = board.getSquare(sq.getX(), sq.getY() + (2 * dir));
-            // Only valid if square is empty
-            if (sTwo.occupiedBy() == Colour.NONE) {
-                Move mTwo = new Move(sq, sTwo, false, false);
-                validMoves.add(mTwo);
+            if (sq.getY() == startRow) {
+                Square sTwo = board.getSquare(sq.getX(), sq.getY() + (2 * dir));
+                // Only valid if square is empty
+                if (sTwo.occupiedBy() == Colour.NONE) {
+                    Move mTwo = new Move(sq, sTwo, false, false);
+                    validMoves.add(mTwo);
+                }
             }
 
         }
