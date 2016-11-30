@@ -50,13 +50,40 @@ public class Player {
         Square[] playerPawns = getAllPawns();
 
         for (Square sq : playerPawns) {
+
+            // TODO: implement captures
+
+            // Set the multiplier (direction) depending on white/black
+            int dir = (col == Colour.WHITE) ? 1 : -1;
+
             // If this player is White/Black, try the different moves
             // in the appropriate direction
+            Square sOne = board.getSquare(sq.getX(), sq.getY() + (1 * dir));
+            // Only valid if square is empty
+            if (sOne.occupiedBy() == Colour.NONE) {
+                Move mOne = new Move(sq, sOne, false, false);
+                validMoves.add(mOne);
+            }
+            else {
+                continue;
+            }
+
+            // If this is the starting square, can move forward 2 squares
+            Square sTwo = board.getSquare(sq.getX(), sq.getY() + (2 * dir));
+            // Only valid if square is empty
+            if (sTwo.occupiedBy() == Colour.NONE) {
+                Move mTwo = new Move(sq, sTwo, false, false);
+                validMoves.add(mTwo);
+            }
+
         }
+
+        return validMoves.toArray(new Move[validMoves.size()]);
 
     }
 
     public boolean isPassedPawn(Square square) {
+        // TODO: implement
         return false;
     }
 

@@ -15,6 +15,8 @@ public class PawnRace {
         Player p1 = new Player(game, board, Colour.WHITE, player1.equals("c"));
         Player p2 = new Player(game, board, Colour.BLACK, player2.equals("c"));
 
+        board.display();
+
         while (!game.isFinished()) {
             Player play = (game.getCurrentPlayer() == Colour.WHITE) ? p1 : p2;
             if (play.isComputer()) {
@@ -22,21 +24,26 @@ public class PawnRace {
                 System.out.print("Computer moved: ");
                 System.out.print(game.getLastMove().getSAN());
                 System.out.println();
+                board.display();
             }
             else {
-                board.display();
                 System.out.print("Please enter a move (in SAN): ");
                 String humanMove = io.next();
+                if (humanMove.toLowerCase().equals(":q")) {
+                    System.out.println("Sorry to see you go!");
+                    return;
+                }
                 Move parsed = game.parseMove(humanMove);
                 if (parsed != null) {
                     game.applyMove(parsed);
                 }
                 else {
-                    System.out.println("Invalid move");
+                    System.out.print("Invalid move. ");
                 }
             }
         }
 
+        board.display();
         String win = game.getGameResult() == Colour.WHITE ? "White" : "Black";
         System.out.println("The winner is: " + win);
         System.out.println("Thanks for playing!");

@@ -68,15 +68,24 @@ public class Game {
 
     public Move parseMove(String san) {
 
-        if (san.contains("x")) {
-            String[] sanParts = san.split("x");
-            String moveData = sanParts[0];
-            String captureData = sanParts[1];
-            int[] capture = translateSAN(captureData);
-            Square captureSq = board.getSquare(capture[0], capture[1]);
-            if (currentPlayer == Colour.WHITE) {
+        // Set the multiplier (direction) depending on white/black
+        int dir = (currentPlayer == Colour.WHITE) ? 1 : -1;
+
+        // Set the starting square depending on the player
+        int startRow = (currentPlayer == Colour.WHITE) ? 1 : 6;
+
+        try {
+
+            if (san.contains("x")) {
+
+                String[] sanParts = san.split("x");
+                String moveData = sanParts[0];
+                String captureData = sanParts[1];
+                int[] capture = translateSAN(captureData);
+                Square captureSq = board.getSquare(capture[0], capture[1]);
+
                 // Find the starting square
-                int[] start = translateSAN(moveData + (capture[1] - 1));
+                int[] start = translateSAN(moveData + (capture[1] - (1*dir)));
                 if (start == null) {
                     return null;
                 }
@@ -84,67 +93,45 @@ public class Game {
                 if (startSq.occupiedBy() == currentPlayer) {
                     return new Move(startSq, captureSq, true, false);
                 }
-                else {
-                    return null;
-                }
+
             }
             else {
-                // Find the starting square
-                int[] start = translateSAN(moveData + (capture[1] + 1));
-                if (start == null) {
+
+                int[] endCoords = translateSAN(san);
+                if (endCoords == null) {
                     return null;
                 }
-                Square startSq = board.getSquare(start[0], start[1]);
-                if (startSq.occupiedBy() == currentPlayer) {
-                    return new Move(startSq, captureSq, true, false);
-                }
-                else {
+
+                Square endSq = board.getSquare(endCoords[0], endCoords[1]);
+                // Only continue if this square is unoccupied
+                if (endSq.occupiedBy() != Colour.NONE) {
                     return null;
                 }
-            }
-        }
-        else {
-            int[] endCoords = translateSAN(san);
-            if (endCoords == null) {
-                return null;
-            }
-            Square endSq = board.getSquare(endCoords[0], endCoords[1]);
-            // Find starting square
-            if (currentPlayer == Colour.WHITE) {
-                Square startSq = board.getSquare(endCoords[0], endCoords[1]-1);
+
+                // Find starting square
+                Square startSq = board.getSquare(endCoords[0], endCoords[1]-(1*dir));
+
                 // If same colour, this is the move we want
                 if (startSq.occupiedBy() == currentPlayer) {
                     return new Move(startSq, endSq, false, false);
                 }
                 else {
                     // Look at 2 squares back
-                    startSq = board.getSquare(endCoords[0], endCoords[1]-2);
-                    if (startSq.occupiedBy() == currentPlayer) {
+                    // Must be starting square
+                    startSq = board.getSquare(endCoords[0], endCoords[1]-(2*dir));
+                    if (startSq.occupiedBy() == currentPlayer && endCoords[1]-(2*dir) == startRow) {
                         return new Move(startSq, endSq, false, false);
                     }
-                    else {
-                        return null;
-                    }
                 }
+
             }
-            else {
-                Square startSq = board.getSquare(endCoords[0], endCoords[1]+1);
-                // If same colour, this is the move we want
-                if (startSq.occupiedBy() == currentPlayer) {
-                    return new Move(startSq, endSq, false, false);
-                }
-                else {
-                    // Look at 2 squares back
-                    startSq = board.getSquare(endCoords[0], endCoords[1]+2);
-                    if (startSq.occupiedBy() == currentPlayer) {
-                        return new Move(startSq, endSq, false, false);
-                    }
-                    else {
-                        return null;
-                    }
-                }
-            }
+
         }
+        catch (Exception e) {
+            return null;
+        }
+
+        return null;
 
         // TODO: consider en passant rule
 
