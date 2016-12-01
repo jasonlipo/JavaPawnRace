@@ -52,6 +52,10 @@ public class Board {
             // Remove the pawn from the crossing square due to the capture
             Square enpassant = setup[moveTo.getX()][moveFrom.getY()];
             enpassant.setOccupier(Colour.NONE);
+            System.out.println(startOcc.toString() + " takes the pawn en-passant at " + enpassant.getSAN());
+        }
+        else if (move.isCapture()) {
+            System.out.println(startOcc.toString() + " takes the pawn at " + endSq.getSAN());
         }
 
     }

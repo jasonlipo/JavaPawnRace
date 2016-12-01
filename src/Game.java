@@ -114,7 +114,6 @@ public class Game {
 
                 if (startSq.occupiedBy() == currentPlayer) {
                     if (captureSq.occupiedBy() == opponent) {
-                        System.out.println(currentPlayer.toString() + " takes the pawn at " + captureData);
                         return new Move(startSq, captureSq, true, false);
                     }
                     else {
@@ -126,7 +125,6 @@ public class Game {
                             // Find the square containing the opponent
                             Square enPassant = board.getSquare(captureSq.getX(), startSq.getY());
                             if (enPassant.occupiedBy() == opponent) {
-                                System.out.println(currentPlayer.toString() + " takes the pawn en-passant at " + enPassant.getSAN());
                                 return new Move(startSq, captureSq, true, true);
                             }
                         }
