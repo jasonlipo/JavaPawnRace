@@ -20,18 +20,28 @@ public class PawnRace {
         // Set the players of the game
         game.setPlayers(p1, p2);
 
+        System.out.println();
+        System.out.println("PAWN RACE");
+        System.out.println("======================");
+        System.out.println("Welcome to PawnRace by Jason Lipowicz!");
+        System.out.println("You can type :q at any point to end the game");
+        System.out.println();
+        System.out.println("WHITE: " + (player1.equals("c") ? "Computer" : "Player"));
+        System.out.println("BLACK: " + (player2.equals("c") ? "Computer" : "Player"));
+
         board.display();
 
         while (!game.isFinished()) {
             Player play = (game.getCurrentPlayer() == Colour.WHITE) ? p1 : p2;
             if (play.isComputer()) {
                 play.randomMove();
-                System.out.print("Computer moved: ");
+                System.out.print(play.getColour().toString().toUpperCase() + ": ");
                 System.out.print(game.getLastMove().getSAN());
                 System.out.println();
+                board.display();
             }
             else {
-                System.out.print("Please enter a move (in SAN): ");
+                System.out.print(play.getColour().toString().toUpperCase() + ": ");
                 String humanMove = io.next();
                 if (humanMove.toLowerCase().equals(":q")) {
                     System.out.println("Sorry to see you go!");
@@ -43,12 +53,11 @@ public class PawnRace {
                     board.display();
                 }
                 else {
-                    System.out.print("Invalid move. ");
+                    System.out.println("** Invalid, please try again **");
                 }
             }
         }
 
-        board.display();
         String win = game.getGameResult() == Colour.WHITE ? "White" : "Black";
         System.out.println("The winner is: " + win);
         System.out.println("Thanks for playing!");

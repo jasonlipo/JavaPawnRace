@@ -105,20 +105,33 @@ public class Game {
                 int[] capture = translateSAN(captureData);
                 Square captureSq = board.getSquare(capture[0], capture[1]);
 
-                // Capture square must have the opponent in
-                if (captureSq.occupiedBy() != opponent) {
-                    return null;
-                }
-
                 // Find the starting square
                 int[] start = translateSAN(moveData + (capture[1] - (1*dir) + 1));
                 if (start == null) {
                     return null;
                 }
                 Square startSq = board.getSquare(start[0], start[1]);
+
                 if (startSq.occupiedBy() == currentPlayer) {
-                    System.out.println(currentPlayer.toString() + " takes the pawn at " + captureData);
-                    return new Move(startSq, captureSq, true, false);
+                    if (captureSq.occupiedBy() == opponent) {
+                        System.out.println(currentPlayer.toString() + " takes the pawn at " + captureData);
+                        return new Move(startSq, captureSq, true, false);
+                    }
+                    else {
+
+                        // Look if the previous move was a 2 square move
+                        Move lastMove = moves.get(currentMove - 1);
+                        if (Math.abs(lastMove.getFrom().getY() - lastMove.getTo().getY()) == 2) {
+                            // This could be an "en-passant" capture
+                            // Find the square containing the opponent
+                            Square enPassant = board.getSquare(captureSq.getX(), startSq.getY());
+                            if (enPassant.occupiedBy() == opponent) {
+                                System.out.println(currentPlayer.toString() + " takes the pawn en-passant at " + enPassant.getSAN());
+                                return new Move(startSq, captureSq, true, true);
+                            }
+                        }
+
+                    }
                 }
 
             }
@@ -159,8 +172,6 @@ public class Game {
         }
 
         return null;
-
-        // TODO: consider en passant rule
 
     }
 

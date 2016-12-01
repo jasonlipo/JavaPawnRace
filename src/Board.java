@@ -49,9 +49,9 @@ public class Board {
         endSq.setOccupier(startOcc);
 
         if (move.isEnPassantCapture()) {
-            // Remove the pawn from the square due to the capture
-            Square capture = setup[moveTo.getX()][moveFrom.getY()];
-            capture.setOccupier(Colour.NONE);
+            // Remove the pawn from the crossing square due to the capture
+            Square enpassant = setup[moveTo.getX()][moveFrom.getY()];
+            enpassant.setOccupier(Colour.NONE);
         }
 
     }
