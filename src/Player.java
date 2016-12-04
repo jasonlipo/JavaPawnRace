@@ -64,23 +64,26 @@ public class Player {
 
             // Look if the previous move was a 2 square move
             Move lastMove = game.getLastMove();
-            if (Math.abs(lastMove.getFrom().getY() - lastMove.getTo().getY()) == 2) {
-                // There could be an "en-passant" capture possible
-                // Make sure the move happened in the column to the left or right
-                if (Math.abs(lastMove.getTo().getX() - sq.getX()) == 1) {
-                    // Final check: the White and Black pawn must now be on the same row
-                    // to count as an en-passant move
-                    if (lastMove.getTo().getY() == sq.getY()) {
-                        // Find the square containing the opponent
-                        int captureY = (lastMove.getFrom().getY() + lastMove.getTo().getY()) / 2;
-                        Square enPassant = board.getSquare(lastMove.getTo().getX(), captureY);
-                        if (enPassant.occupiedBy() == Colour.NONE) {
-                            Move mEPass = new Move(sq, enPassant, true, true);
-                            validMoves.add(mEPass);
-                        }
-                    }
-                }
-            }
+
+			if (lastMove != null) {
+				if (Math.abs(lastMove.getFrom().getY() - lastMove.getTo().getY()) == 2) {
+					// There could be an "en-passant" capture possible
+					// Make sure the move happened in the column to the left or right
+					if (Math.abs(lastMove.getTo().getX() - sq.getX()) == 1) {
+						// Final check: the White and Black pawn must now be on the same row
+						// to count as an en-passant move
+						if (lastMove.getTo().getY() == sq.getY()) {
+							// Find the square containing the opponent
+							int captureY = (lastMove.getFrom().getY() + lastMove.getTo().getY()) / 2;
+							Square enPassant = board.getSquare(lastMove.getTo().getX(), captureY);
+							if (enPassant.occupiedBy() == Colour.NONE) {
+								Move mEPass = new Move(sq, enPassant, true, true);
+								validMoves.add(mEPass);
+							}
+						}
+					}
+				}
+			}
 
             // Look for capture moves
             if (sq.getX() > 0) {
