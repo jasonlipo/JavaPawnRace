@@ -111,10 +111,10 @@ public class Board {
             for (int j=0; j<Utils.dim; j++) {
                 switch (setup[j][Utils.dim-i-1].occupiedBy()) {
                     case BLACK:
-                        System.out.print("B ");
+                        System.out.print("\u2B25 ");
                         break;
                     case WHITE:
-                        System.out.print("W ");
+                        System.out.print("\u2B26 ");
                         break;
                     default:
                         System.out.print(". ");
