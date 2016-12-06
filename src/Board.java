@@ -86,7 +86,7 @@ public class Board {
                 // Look at the colour in the end square
                 // And set the end square to the other colour
                 Colour other;
-                other = endOcc == Colour.BLACK ? Colour.WHITE : Colour.BLACK;
+                other = (endOcc == Colour.BLACK) ? Colour.WHITE : Colour.BLACK;
                 endSq.setOccupier(other);
             }
         }
