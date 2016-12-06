@@ -32,9 +32,9 @@ public class Game {
         }
     }
 
-    public void applyMove(Move move) {
+    public void applyMove(Move move, boolean log) {
         moves.add(currentMove, move);
-        board.applyMove(move);
+        board.applyMove(move, log);
         updateGame(1);
     }
 

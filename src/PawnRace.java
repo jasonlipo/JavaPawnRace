@@ -34,11 +34,11 @@ public class PawnRace {
         while (!game.isFinished()) {
             Player play = (game.getCurrentPlayer() == Colour.WHITE) ? p1 : p2;
             if (play.isComputer()) {
-                Move compMove = play.smartMove();
+                Move compMove = play.smartMove(true);
                 System.out.print(play.getColour().toString().toUpperCase() + ": ");
                 System.out.print(compMove.getSAN());
                 System.out.println();
-                game.applyMove(compMove);
+                game.applyMove(compMove, true);
                 board.display();
             }
             else {
@@ -50,7 +50,7 @@ public class PawnRace {
                 }
                 Move parsed = game.parseMove(humanMove);
                 if (parsed != null) {
-                    game.applyMove(parsed);
+                    game.applyMove(parsed, true);
                     board.display();
                 }
                 else {

@@ -138,28 +138,54 @@ public class Player {
     public void randomMove() {
         Move[] valid = getAllValidMoves();
         int randomMove = new Random().nextInt(valid.length);
-        game.applyMove(valid[randomMove]);
+        game.applyMove(valid[randomMove], true);
     }
 
-    public Move smartMove() {
+    public Move smartMove(boolean lookFuture) {
 
         // The basics of an AI
-        // Start by prioritising en-passant and regular captures
+        // Give weighting to certain moves
         Move[] valid = getAllValidMoves();
+
         Arrays.sort(valid, new Comparator<Move>() {
             public int compare(Move m1, Move m2) {
-                int randomise1 = new Random().nextInt(99);
-                int randomise2 = new Random().nextInt(99);
-                int w1 = (m1.isEnPassantCapture() ? 200 : randomise1) +
-                         (m1.isCapture() ? 200 : randomise1);
-                int w2 = (m2.isEnPassantCapture() ? 200 : randomise2) +
-                         (m2.isCapture() ? 200 : randomise2);
-                return w2 - w1;
+                return getMoveWeight(m2, lookFuture) - getMoveWeight(m1, lookFuture);
             }
         });
 
         Move bestMove = valid[0];
         return bestMove;
+
+    }
+
+    private int getMoveWeight(Move move, boolean lookFuture) {
+
+        // Start by generating a random number from 1-100
+        int weight;
+        weight = new Random().nextInt(100);
+
+        // En-passant moves and captures are prioritised
+        if (move.isCapture()) {
+            weight = 500;
+        }
+
+        // Prioritise moves closer to the finish
+        int endRow = (col == Colour.WHITE) ? 7 : 0;
+        int distanceFromFinish = Math.abs(move.getTo().getY() - endRow);
+        weight += (Utils.dim - distanceFromFinish) * 100;
+
+        if (lookFuture) {
+            // Try this move and see what happens
+            // If the next player's top move would result in a capture, give this move a low weighting
+            game.applyMove(move, false);
+            Move otherPlayMove = smartMove(false);
+            if (otherPlayMove.isCapture()) {
+                weight = 0;
+            }
+            game.unapplyMove();
+        }
+
+        return weight;
 
     }
 
